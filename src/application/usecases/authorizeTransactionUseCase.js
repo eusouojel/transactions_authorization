@@ -1,6 +1,6 @@
 import { authorizeTransactionService } from '../../domain/services/transactionAuthorizationService.js';
-import { findAccountById, updateAccount } from '../../infrastructure/persistence/AccountRepository.js';
-import { createTransaction } from '../../infrastructure/persistence/TransactionRepository.js';
+import { findAccountById, updateAccount } from '../../infrastructure/persistence/repositories/AccountRepository.js';
+import { createTransaction } from '../../infrastructure/persistence/repositories/TransactionRepository.js';
 
 
 export const authorizeTransactionUseCase = async (accountId, totalAmount, mcc, merchant) => {
@@ -11,10 +11,10 @@ export const authorizeTransactionUseCase = async (accountId, totalAmount, mcc, m
     return { success: false, error: 'Account not found' };
   }
 
-  const result = authorizeTransactionService(account, totalAmount, mcc, merchant);
+  const authorization = authorizeTransactionService(account, totalAmount, mcc, merchant);
   
-  if (!result.success) {
-    return { success: false, error: result.error };
+  if (!authorization.success) {
+    return { success: false, code: authorization.code };
   }
 
   await createTransaction({ 
@@ -24,7 +24,7 @@ export const authorizeTransactionUseCase = async (accountId, totalAmount, mcc, m
     merchant 
   });
 
-  await updateAccount(result.account);
+  await updateAccount(authorization.account);
 
-  return { success: true, code: result.code };
+  return { success: true, code: authorization.code };
 };
