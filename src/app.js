@@ -4,7 +4,7 @@ import routes from './interfaces/http/routes.js';
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/api', routes);
 
