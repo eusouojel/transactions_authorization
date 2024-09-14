@@ -1,6 +1,6 @@
 import knex from 'knex';
-import knexConfig from '../../../knexfile.cjs';
-import { Account } from '../../domain/entities/account.js';
+import knexConfig from '../../../../knexfile.cjs';
+import { Account } from '../../../domain/entities/account.js';
 
 const db = knex(knexConfig.development);
 
