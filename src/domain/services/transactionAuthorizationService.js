@@ -19,7 +19,8 @@ const debitBalance = (account, totalAmount, balanceType) => ({
 });
 
 export const authorizeTransactionService = (account, totalAmount, mcc) => {
-  const validation = validateTransactionInput(account, totalAmount, mcc);
+  
+  const validation = validateTransactionInput(mcc);
   
   if (!validation.isValid) {
     return { success: false, error: validation.error, code: '07' };
@@ -32,7 +33,7 @@ export const authorizeTransactionService = (account, totalAmount, mcc) => {
   }
 
   if (!hasSufficientBalance(account, totalAmount, balanceType)) {
-    return { success: false, error: `Insufficient balance in ${balanceType}` };
+    return { success: false, error: `Insufficient balance in ${balanceType}`, code: '51' };
   }
 
   const updatedAccount = debitBalance(account, totalAmount, balanceType);
