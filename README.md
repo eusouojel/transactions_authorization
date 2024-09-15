@@ -22,7 +22,8 @@ A camada de Domínio encapsula a lógica de negócio central do sistema, definin
 #### Componentes:
 
 * Entidades (entities):
-  * Account (account.js): Representa uma conta bancária com atributos como id, foodBalance, mealBalance e cashBalance. Esta entidade é fundamental para gerenciar os saldos disponíveis para diferentes tipos de transações.
+  * Account: Representa uma conta bancária com atributos como id, foodBalance, mealBalance e cashBalance. Esta entidade é fundamental para gerenciar os saldos disponíveis para diferentes tipos de transações.
+  * Transaction: Representa uma transação com atributos accountID, totalAmount, mcc e merchant. Ela é fundamental para registrar as transações solicitadas para a aplicação, transações essas que manipulam os saldos disponíveis nas contas.
     
 * Serviços (services):
 
@@ -76,7 +77,7 @@ A camada de Infraestrutura fornece implementações concretas para as interfaces
 #### Componentes Principais:
 
 * Persistência (persistence/repositories):
-  * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados PostgreSQL. As principais operações incluem:
+  * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados. As principais operações incluem:
     * findById: Busca uma conta no banco de dados pelo seu id.
     * update: Atualiza os saldos da conta no banco de dados após a autorização da transação.
   * TransactionRepositoryDatabase: Implementa a interface TransactionRepository utilizando Knex.js para inserir novas transações no banco de dados.
@@ -101,8 +102,103 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
   * Rotas (routes):
     * transactionRoutes: Define os endpoints da API relacionados a transações. Mapeia rotas específicas para os controladores correspondentes.
   * Principais Endpoints:
-    * POST /authorize: Endpoint para autorizar uma nova transação financeira. Invoca a função authorizeTransaction do transactionController.
+    * POST /api/transactions: Endpoint para autorizar uma nova transação financeira. Invoca a função authorizeTransaction do transactionController.
 
 #### Interação com Outras Camadas:
 
 Os controladores da camada de API utilizam os casos de uso da camada de Aplicação para executar operações solicitadas pelos clientes. A API atua como a interface de entrada para o sistema, recebendo requisições externas, processando-as através das camadas internas e retornando respostas apropriadas.
+
+### Detalhes da API
+
+A API do projeto expõe endpoints para autorizar transações financeiras, permitindo que clientes externos interajam com o sistema de forma segura e eficiente.
+
+#### Autorizar Transação
+
+* URL: /api/transactions/
+* Método: POST
+* Descrição: Autoriza uma transação financeira para uma conta específica.
+* Body da Requisição:
+```json
+{
+  "accountId": "123",
+  "totalAmount": 50.0,
+  "mcc": "5411",
+  "merchant": "UBER TRIP                   SAO PAULO BR"
+}
+```
+
+* Parâmetros:
+  * accountId (string): Identificador único da conta.
+  * totalAmount (number): Valor total da transação.
+  * mcc (string): Código de categoria do comerciante (Merchant Category Code).
+  * merchant (string): Nome do comerciante.
+
+* Respostas:
+  * Sucesso (Código 00):
+    * Status: 200 OK
+    * Body:
+      ```json
+      {
+        "code": "00"
+      }
+      ```
+
+  * Saldo Insuficiente (Código 51):
+    * Status: 200 OK
+    * Body:
+      ```json
+      {
+        "code": "51"
+      }
+      ```
+
+  * Conta Não Encontrada (Código 07):
+    * Status: 200 OK
+    * Body:
+      ```json
+      {
+        "code": "07"
+      }
+      ```
+
+  * Entrada Inválida (Código 07):
+    * Status: 200 OK
+    * Body:
+      ```json
+      {
+        "code": "07"
+      }
+      ```
+
+  * Falhas gerais que impedem a autorização (Código 07):
+    * Status: 200 OK
+    * Body:
+      ```json
+      {
+        "code": "07"
+      }
+      ```
+      
+#### Exemplos de Requisição com cURL
+
+
+```bash
+curl -X POST http://localhost:3000/api/transactions/authorize \
+-H "Content-Type: application/json" \
+-d '{
+  "accountId": "123",
+  "totalAmount": 50.0,
+  "mcc": "5411",
+  "merchant": "UBER TRIP                   SAO PAULO BR"
+}'
+```
+
+#### Collection do Postman AQUI.
+
+### Dependências Principais
+* Node.js: Ambiente de execução para JavaScript no servidor.
+* Express.js: Framework web para construção de APIs.
+* Knex.js: Query builder para facilitar interações com o banco de dados.
+* Vitest: Framework de testes para garantir a qualidade do código.
+* SQlite: Banco de dados.
+* ES Modules (ESM): Sistema de módulos nativo do Node.js para melhor organização e modularidade do código.
