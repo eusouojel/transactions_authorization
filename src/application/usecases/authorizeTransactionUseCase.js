@@ -1,30 +1,42 @@
 import { authorizeTransactionService } from '../../domain/services/transactionAuthorizationService.js';
-import { findAccountById, updateAccount } from '../../infrastructure/persistence/repositories/AccountRepository.js';
-import { createTransaction } from '../../infrastructure/persistence/repositories/TransactionRepository.js';
+import { AccountRepository } from '../../domain/repositories/accountRepository.js';
+import { TransactionRepository } from '../../domain/repositories/transactionRepository.js';
 
+export const authorizeTransactionUseCase = (dependencies) => {
+  return async (input) => {
+    const {
+      accountRepository = AccountRepository(),
+      transactionRepository = TransactionRepository(),
+    } = dependencies;
+    
+    const { accountId, totalAmount, mcc, merchant } = input;
 
-export const authorizeTransactionUseCase = async (accountId, totalAmount, mcc, merchant) => {
-  
-  const account = await findAccountById(accountId);
-  
-  if (!account) {
-    return { success: false, error: 'Account not found' };
-  }
+    const account = await accountRepository.findById(accountId);
 
-  const authorization = authorizeTransactionService(account, totalAmount, mcc, merchant);
-  
-  if (!authorization.success) {
-    return { success: false, code: authorization.code };
-  }
+    if (!account) {
+      console.error('Account not found!');
+      return { success: false, code: '07' };
+    }
 
-  await createTransaction({ 
-    accountId, 
-    totalAmount, 
-    mcc, 
-    merchant 
-  });
+    const authorization = authorizeTransactionService(
+      account,
+      totalAmount,
+      mcc
+    );
 
-  await updateAccount(authorization.account);
+    if (!authorization.success) {
+      return { success: false, code: authorization.code };
+    }
 
-  return { success: true, code: authorization.code };
+    await transactionRepository.create({
+      accountId,
+      totalAmount,
+      mcc,
+      merchant,
+    });
+
+    await accountRepository.update(authorization.account);
+
+    return { success: true, code: authorization.code };
+  };
 };

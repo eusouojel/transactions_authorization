@@ -1,42 +1,35 @@
-import { validateTransactionInput } from './validationService.js';
-
-const balanceTypes = {
-  '5411': 'foodBalance',
-  '5412': 'foodBalance',
-  '5811': 'mealBalance',
-  '5812': 'mealBalance'
-};
-
-const mapMccToBalanceType = mcc => balanceTypes[mcc];
-// const mapMccToBalanceType = mcc => balanceTypes[mcc] || 'cashBalance';
-
-const hasSufficientBalance = (account, totalAmount, balanceType) => 
-  account[balanceType] >= totalAmount;
-
-const debitBalance = (account, totalAmount, balanceType) => ({
-  ...account,
-  [balanceType]: account[balanceType] - totalAmount
-});
-
 export const authorizeTransactionService = (account, totalAmount, mcc) => {
-  
-  const validation = validateTransactionInput(mcc);
-  
-  if (!validation.isValid) {
-    return { success: false, error: validation.error, code: '07' };
-  }
+  const balanceTypes = {
+    '5411': 'foodBalance',
+    '5412': 'foodBalance',
+    '5811': 'mealBalance',
+    '5812': 'mealBalance',
+  };
 
-  const balanceType = mapMccToBalanceType(mcc);
+  const balanceType = balanceTypes[mcc];
 
   if (!balanceType) {
-    return { success: false, error: `MCC ${mcc} does not exist`, code: '07' };
+    console.error(`MCC ${mcc} does not exist`);
+    return {
+      success: false,
+      error: `MCC ${mcc} does not exist`,
+      code: '07',
+    };
   }
 
-  if (!hasSufficientBalance(account, totalAmount, balanceType)) {
-    return { success: false, error: `Insufficient balance in ${balanceType}`, code: '51' };
+  if (account[balanceType] < totalAmount) {
+    console.error(`Insufficient balance in ${balanceType}`);
+    return {
+      success: false,
+      error: `Insufficient balance in ${balanceType}`,
+      code: '51',
+    };
   }
 
-  const updatedAccount = debitBalance(account, totalAmount, balanceType);
-  
+  const updatedAccount = {
+    ...account,
+    [balanceType]: account[balanceType] - totalAmount,
+  };
+
   return { success: true, account: updatedAccount, code: '00' };
 };
