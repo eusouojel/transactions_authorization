@@ -14,7 +14,6 @@ export const authorizeTransactionUseCase = (dependencies) => {
     const account = await accountRepository.findById(accountId);
 
     if (!account) {
-      console.error('Account not found!');
       return { success: false, code: '07' };
     }
 
