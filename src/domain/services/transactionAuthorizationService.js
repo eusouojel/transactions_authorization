@@ -1,10 +1,32 @@
 import { validateTransactionInput } from './validationService.js';
 
-export const authorizeTransactionService = (account, totalAmount, mcc) => {
+const getMerchantMcc = (merchant) => {
+  const merchantToMcc = {
+    'UBER TRIP                   SAO PAULO BR': '5812',
+    'UBER EATS                   SAO PAULO BR': '5819',
+    'PAG*JoseDaSilva          RIO DE JANEI BR': '5411',
+    'PICPAY*BILHETEUNICO           GOIANIA BR': '5812',
+  };
+
+  return merchantToMcc[merchant] || null;
+};
+
+export const authorizeTransactionService = (account, totalAmount, mcc, merchant) => {
+
+  let validationResult = validateTransactionInput(totalAmount, mcc);
   
-  const validationResult = validateTransactionInput(totalAmount, mcc);
-  
+  if (!validationResult.isValid && validationResult.error.includes('MCC')) {
+    console.log('MCC inválido.');
+    const merchantMcc = getMerchantMcc(merchant);
+    
+    mcc = merchantMcc || mcc;
+    
+    console.log('Utilizando o MCC do comerciante');
+    validationResult = validateTransactionInput(totalAmount, mcc);
+  }
+
   if (!validationResult.isValid) {
+    console.log('MCC inválido.');
     return {
       success: false,
       error: validationResult.error,
@@ -21,18 +43,21 @@ export const authorizeTransactionService = (account, totalAmount, mcc) => {
 
   const balanceType = balanceTypes[mcc];
 
-  if (account[balanceType] < totalAmount) {
-    console.error(`Insufficient balance in ${balanceType}`);
+  const balanceToUse = account[balanceType] >= totalAmount ? balanceType : 'cashBalance';
+  console.log(`utilizando o saldo do ${balanceToUse}`);
+
+  if (account[balanceToUse] < totalAmount) {
+    console.log(`Saldo insuficiente em ${balanceToUse}`);
     return {
       success: false,
-      error: `Insufficient balance in ${balanceType}`,
+      error: `Insufficient balance in ${balanceToUse} and cashBalance`,
       code: '51',
     };
   }
 
   const updatedAccount = {
     ...account,
-    [balanceType]: account[balanceType] - totalAmount,
+    [balanceToUse]: account[balanceToUse] - totalAmount,
   };
 
   return { success: true, account: updatedAccount, code: '00' };
