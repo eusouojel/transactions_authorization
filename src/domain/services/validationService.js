@@ -4,7 +4,7 @@ export const validateTransactionInput = (totalAmount, mcc) => {
   if (typeof totalAmount !== 'number' || totalAmount <= 0) {
     return {
       isValid: false,
-      error: 'totalAmount inválido. Deve ser um número positivo.'
+      error: 'Invalid totalAmount. It must be a positive number.'
     };
   }
 
