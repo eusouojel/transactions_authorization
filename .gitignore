@@ -131,3 +131,6 @@ dist
 
 # Database
 *.sqlite
+
+# DS_Store
+.DS_Store
