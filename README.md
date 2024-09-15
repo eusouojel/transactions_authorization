@@ -183,7 +183,7 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 
 
 ```bash
-curl -X POST http://localhost:3000/api/transactions/authorize \
+curl -X POST http://localhost:3000/api/transactions \
 -H "Content-Type: application/json" \
 -d '{
   "accountId": "123",
