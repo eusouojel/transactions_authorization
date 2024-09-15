@@ -21,7 +21,8 @@ export const authorizeTransactionUseCase = (dependencies) => {
     const authorization = authorizeTransactionService(
       account,
       totalAmount,
-      mcc
+      mcc,
+      merchant
     );
 
     if (!authorization.success) {
