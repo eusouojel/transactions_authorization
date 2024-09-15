@@ -16,17 +16,14 @@ export const authorizeTransactionService = (account, totalAmount, mcc, merchant)
   let validationResult = validateTransactionInput(totalAmount, mcc);
   
   if (!validationResult.isValid && validationResult.error.includes('MCC')) {
-    console.log('MCC inválido.');
     const merchantMcc = getMerchantMcc(merchant);
     
     mcc = merchantMcc || mcc;
     
-    console.log('Utilizando o MCC do comerciante');
     validationResult = validateTransactionInput(totalAmount, mcc);
   }
 
   if (!validationResult.isValid) {
-    console.log('MCC inválido.');
     return {
       success: false,
       error: validationResult.error,
@@ -44,13 +41,11 @@ export const authorizeTransactionService = (account, totalAmount, mcc, merchant)
   const balanceType = balanceTypes[mcc];
 
   const balanceToUse = account[balanceType] >= totalAmount ? balanceType : 'cashBalance';
-  console.log(`utilizando o saldo do ${balanceToUse}`);
 
   if (account[balanceToUse] < totalAmount) {
-    console.log(`Saldo insuficiente em ${balanceToUse}`);
     return {
       success: false,
-      error: `Insufficient balance in ${balanceToUse} and cashBalance`,
+      error: 'Insufficient balance.',
       code: '51',
     };
   }
