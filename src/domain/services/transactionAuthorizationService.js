@@ -1,4 +1,17 @@
+import { validateTransactionInput } from './validationService.js';
+
 export const authorizeTransactionService = (account, totalAmount, mcc) => {
+  
+  const validationResult = validateTransactionInput(totalAmount, mcc);
+  
+  if (!validationResult.isValid) {
+    return {
+      success: false,
+      error: validationResult.error,
+      code: '07',
+    };
+  }
+
   const balanceTypes = {
     '5411': 'foodBalance',
     '5412': 'foodBalance',
@@ -7,15 +20,6 @@ export const authorizeTransactionService = (account, totalAmount, mcc) => {
   };
 
   const balanceType = balanceTypes[mcc];
-
-  if (!balanceType) {
-    console.error(`MCC ${mcc} does not exist`);
-    return {
-      success: false,
-      error: `MCC ${mcc} does not exist`,
-      code: '07',
-    };
-  }
 
   if (account[balanceType] < totalAmount) {
     console.error(`Insufficient balance in ${balanceType}`);
