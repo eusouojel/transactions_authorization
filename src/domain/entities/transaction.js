@@ -1,7 +1,6 @@
-export const Transaction = (id, foodBalance, mealBalance, cashBalance) => ({
+export const Transaction = (accountId, totalAmount, mcc, merchant) => ({
   accountId,
   totalAmount,
   mcc,
-  merchant,
-  createdAt
+  merchant
 });
