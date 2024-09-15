@@ -72,7 +72,8 @@ describe('authorizeTransactionUseCase', () => {
         cashBalance: 200,
       },
       150,
-      '5411'
+      '5411',
+      'Test Merchant',
     );
     expect(result).toEqual({ success: false, code: '51' });
   });
@@ -115,7 +116,8 @@ describe('authorizeTransactionUseCase', () => {
         cashBalance: 200,
       },
       30,
-      '5411'
+      '5411',
+      'Test Merchant'
     );
 
     expect(transactionRepositoryMock.create).toHaveBeenCalledWith({
