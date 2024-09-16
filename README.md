@@ -28,15 +28,10 @@ A camada de Domínio encapsula a lógica de negócio central do sistema, definin
 * Serviços (services):
 
   * transactionAuthorizationService: Implementa a lógica de autorização das transações. Este serviço valida os inputs da transação, determina qual tipo de saldo (alimentação, refeição ou dinheiro) deve ser utilizado para a transação e atualiza o saldo da conta de acordo.
-    * Funções Principais:
-      * authorizeTransactionService: Autoriza a transação baseada nas regras de negócio, verificando a validade dos inputs e a disponibilidade de saldo.
-      * getMerchantMcc: Obtém o código MCC (Merchant Category Code) baseado no nome do comerciante, permitindo ajustes no processo de validação se necessário.
-
   * validationService (validationService.js): Responsável por validar os inputs das transações, garantindo que o totalAmount seja um número positivo e que o mcc seja um código válido.
-    * Funções Principais:
-      * validateTransactionInput: Realiza as validações necessárias nos dados de entrada da transação.
 
 * Repositórios (repositories):
+
   * AccountRepository: Define a interface para operações relacionadas às contas, como encontrar uma conta por ID e atualizar os saldos da conta.
   * TransactionRepository: Define a interface para operações relacionadas às transações, especificamente a criação de novas transações no sistema.
 
@@ -55,18 +50,10 @@ A camada de Aplicação coordena a execução das ações específicas do sistem
 #### Componentes Principais:
 
 * Casos de Uso (useCases):
-  * authorizeTransactionUseCase: Orquestra o processo completo de autorização de uma transação financeira. Este caso de uso realiza as seguintes etapas:
-
-    1.  Recuperação da Conta: Utiliza o AccountRepository para buscar a conta pelo accountId.
-    2.  Validação da Conta: Verifica se a conta existe; caso contrário, retorna um erro.
-    3.  Autorização da Transação: Invoca o authorizeTransactionService para validar e autorizar a transação.
-    4.  Registro da Transação: Utiliza o TransactionRepository para registrar a nova transação no sistema.
-    5.  Atualização da Conta: Atualiza os saldos da conta com base na autorização realizada.
-    6.  Resposta Final: Retorna o resultado da autorização, indicando sucesso ou falha com os respectivos códigos.
-  
-  * Create Account: Cria uma nova conta de usuário com saldos iniciais para foodBalance, mealBalance e cashBalance.
-  * Add Balance: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
-  * Get Account: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
+  * authorizeTransactionUseCase: Orquestra o processo completo de autorização de uma transação financeira.
+  * createAccount: Cria uma nova conta de usuário com saldos iniciais para foodBalance, mealBalance e cashBalance.
+  * addBalance: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
+  * getAccount: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
 
 #### Interação com Outras Camadas:
 
@@ -81,11 +68,8 @@ A camada de Infraestrutura fornece implementações concretas para as interfaces
 #### Componentes Principais:
 
 * Persistência (persistence/repositories):
-  * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados. As principais operações incluem:
-    * findById: Busca uma conta no banco de dados pelo seu id.
-    * update: Atualiza os saldos da conta no banco de dados após a autorização da transação.
+  * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados.
   * TransactionRepositoryDatabase: Implementa a interface TransactionRepository utilizando Knex.js para inserir novas transações no banco de dados.
-    * create: Registra uma nova transação financeira no banco de dados.
 
 #### Interação com Outras Camadas:
 
@@ -101,12 +85,9 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
 
 * Controladores (controllers):
   * transactionController: Manipula as requisições HTTP relacionadas a transações. Este controlador recebe os dados da requisição, invoca o caso de uso authorizeTransactionUseCase com os parâmetros fornecidos e retorna a resposta adequada ao cliente com base no resultado da autorização.
-    * Funções Principais:
-      * authorizeTransaction: Processa a autorização de uma transação, lidando com respostas de sucesso, falha ou erros internos.
   * Rotas (routes):
+    * accountRoutes: ...
     * transactionRoutes: Define os endpoints da API relacionados a transações. Mapeia rotas específicas para os controladores correspondentes.
-  * Principais Endpoints:
-    * POST /api/transactions: Endpoint para autorizar uma nova transação financeira. Invoca a função authorizeTransaction do transactionController.
   * accountController: O Account Controller gerencia as requisições relacionadas às operações de contas, interagindo com os casos de uso correspondentes para executar as ações necessárias.
     * Métodos Implementados:
       * createAccount: Responsável por criar uma nova conta
@@ -251,9 +232,9 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
   |Campo|Tipo|Obrigatório|Descrição|
   |-----|----|-----------|---------|
-  |accountId|	string|	Sim|	Identificador da conta.|
-  |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (foodBalance, |mealBalance, cashBalance).|
-  |amount|	number|	Sim|	Valor a ser adicionado.|
+  |accountId|	string|	Sim|	Identificador da conta|
+  |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (foodBalance, |mealBalance, cashBalance)|
+  |amount|	number|	Sim|	Valor a ser adicionado|
 
 * Exemplo de Requisição:
   ```json
@@ -286,7 +267,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 * Parâmetros na URL:
   |Campo|Tipo|Obrigatório|Descrição|
   |-----|----|-----------|---------|
-  |accountId|	string|	Sim|	Identificador da conta a ser buscada.|
+  |accountId|	string|	Sim|	Identificador da conta a ser buscada|
 
 * Exemplo de Requisição:
     ```bash
@@ -327,7 +308,7 @@ Instalar Dependências de Desenvolvimento
 Caso ainda não tenha instalado, execute:
 
 ```bash
-npm install --save-dev vitest mock-knex
+npm install --save-dev vitest
 ```
 
 Executar os Testes
@@ -376,3 +357,4 @@ Os testes abrangem os seguintes cenários:
 * Vitest: Framework de testes para garantir a qualidade do código.
 * SQlite: Banco de dados.
 * ES Modules (ESM): Sistema de módulos nativo do Node.js para melhor organização e modularidade do código.
+
