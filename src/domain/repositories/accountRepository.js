@@ -5,4 +5,10 @@ export const AccountRepository = () => ({
   update: (account) => {
     throw new Error('Method not implemented.');
   },
+  create: async (account) => {
+    throw new Error('Method not implemented.');
+  },
+  addBalance: async (accountId, balanceType, amount) => {
+    throw new Error('Method not implemented.');
+  },
 });

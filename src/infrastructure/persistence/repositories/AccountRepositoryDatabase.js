@@ -30,8 +30,25 @@ export const AccountRepositoryDatabase = () => {
     });
   };
 
+  const create = async (account) => {
+    await db('accounts').insert({
+      id: account.id,
+      food_balance: account.foodBalance,
+      meal_balance: account.mealBalance,
+      cash_balance: account.cashBalance,
+    });
+  };
+
+  const addBalance = async (accountId, balanceType, amount) => {
+    await db('accounts')
+      .where({ id: accountId })
+      .increment(`${balanceType}`, amount);
+  };
+
   return {
     findById,
     update,
+    create,
+    addBalance,
   };
 };
