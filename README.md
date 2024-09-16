@@ -1,3 +1,7 @@
+# L4 - Questão aberta
+
+A resposta para a questão aberta está [AQUI](L4-questão_aberta.md) - (na raiz do projeto, arquivo `L4-questão_aberta.md`).
+
 # Visão Geral do Projeto
 
 Este projeto implementa um sistema de autorização de transações financeiras utilizando Node.js com ES Modules (ESM). A arquitetura segue os princípios de Domain-Driven Design (DDD), garantindo uma separação clara de responsabilidades entre as diferentes camadas do sistema. O projeto utiliza Knex.js como query builder para interações com o banco de dados e Vitest para testes unitários.
