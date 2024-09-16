@@ -63,6 +63,10 @@ A camada de Aplicação coordena a execução das ações específicas do sistem
     4.  Registro da Transação: Utiliza o TransactionRepository para registrar a nova transação no sistema.
     5.  Atualização da Conta: Atualiza os saldos da conta com base na autorização realizada.
     6.  Resposta Final: Retorna o resultado da autorização, indicando sucesso ou falha com os respectivos códigos.
+  
+  * Create Account: Cria uma nova conta de usuário com saldos iniciais para foodBalance, mealBalance e cashBalance.
+  * Add Balance: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
+  * Get Account: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
 
 #### Interação com Outras Camadas:
 
@@ -103,6 +107,11 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
     * transactionRoutes: Define os endpoints da API relacionados a transações. Mapeia rotas específicas para os controladores correspondentes.
   * Principais Endpoints:
     * POST /api/transactions: Endpoint para autorizar uma nova transação financeira. Invoca a função authorizeTransaction do transactionController.
+  * accountController: O Account Controller gerencia as requisições relacionadas às operações de contas, interagindo com os casos de uso correspondentes para executar as ações necessárias.
+    * Métodos Implementados:
+      * createAccount: Responsável por criar uma nova conta
+      * addBalance: Responsável por adicionar saldo a um tipo específico de balance de uma conta existente
+      * getAccount: Responsável por recuperar os dados de uma conta específica
 
 #### Interação com Outras Camadas:
 
@@ -114,10 +123,19 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 
 #### Autorizar Transação
 
-* URL: /api/transactions/
+* URL: /api/v1/transactions/
 * Método: POST
 * Descrição: Autoriza uma transação financeira para uma conta específica.
-* Body da Requisição:
+* Parâmetros no corpo da requisição (JSON):
+
+  |Campo|Tipo|Obrigatório|Descrição|
+  |-----|----|-----------|---------|
+  |accountId|number|Sim|Identificador único da conta|
+  |totalAmount|number|Sim|Valor a ser debitado de um saldo específico|
+  |mcc|string|Sim|Mcc referente a um saldo específico da conta|
+  |merchant|string|Sim|Nome do comerciante que está solicitando o débito|
+
+* Exemplo de requisição JSON:
 ```json
 {
   "accountId": "123",
@@ -127,11 +145,17 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 }
 ```
 
-* Parâmetros:
-  * accountId (string): Identificador único da conta.
-  * totalAmount (number): Valor total da transação.
-  * mcc (string): Código de categoria do comerciante (Merchant Category Code).
-  * merchant (string): Nome do comerciante.
+* Exemplos de Requisição com cURL
+```bash
+curl -X POST http://localhost:3000/api/v1/transactions \
+-H "Content-Type: application/json" \
+-d '{
+  "accountId": "123",
+  "totalAmount": 50.0,
+  "mcc": "5411",
+  "merchant": "UBER TRIP                   SAO PAULO BR"
+}'
+```
 
 * Respostas:
   * Sucesso (Código 00):
@@ -178,24 +202,174 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
         "code": "07"
       }
       ```
-      
-#### Exemplos de Requisição com cURL
 
+#### Criar Nova Conta
 
-```bash
-curl -X POST http://localhost:3000/api/transactions \
--H "Content-Type: application/json" \
--d '{
-  "accountId": "123",
-  "totalAmount": 50.0,
-  "mcc": "5411",
-  "merchant": "UBER TRIP                   SAO PAULO BR"
-}'
+* URL: /api/accounts/create
+* Método: POST
+* Descrição: Cria uma nova conta com saldos iniciais.
+* Parâmetros no Corpo da Requisição (JSON):
+
+  |Campo|Tipo|Obrigatório|Descrição|
+  |-----|----|-----------|---------|
+  |id|string| Sim| Identificador único da conta|
+  |foodBalance|	number|	Sim|	Saldo inicial para alimentação|
+  |mealBalance|	number|	Sim|	Saldo inicial para refeições|
+  |cashBalance|	number|	Sim|	Saldo inicial em dinheiro|
+
+* Exemplo de Requisição:
+```json
+{
+  "id": "acc123",
+  "foodBalance": 100,
+  "mealBalance": 50,
+  "cashBalance": 200
+}
 ```
+
+* Respostas:
+  * Sucesso (201 Created):
+    ```json
+    {
+      "success": true
+    }
+    ```
+  * Falha (400 Bad Request):
+    ```json
+    {
+      "success": false,
+      "message": "Detalhes do erro."
+    }
+    ```
+
+#### Adicionar Saldo a uma Conta
+
+* URL: /api/v1/accounts/add-balance
+* Método: POST
+* Descrição: Adiciona saldo a um tipo específico de balance de uma conta existente.
+* Parâmetros no Corpo da Requisição (JSON):
+
+  |Campo|Tipo|Obrigatório|Descrição|
+  |-----|----|-----------|---------|
+  |accountId|	string|	Sim|	Identificador da conta.|
+  |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (foodBalance, |mealBalance, cashBalance).|
+  |amount|	number|	Sim|	Valor a ser adicionado.|
+
+* Exemplo de Requisição:
+  ```json
+  {
+    "accountId": "acc123",
+    "balanceType": "foodBalance",
+    "amount": 50
+  }
+  ```
+* Respostas:
+  * Sucesso (200 OK):
+    ```json
+    {
+      "success": true
+    }
+    ```
+  * Falha (400 Bad Request):
+    ```json
+    {
+      "success": false,
+      "message": "Detalhes do erro."
+    }
+    ```
+
+#### Obter Dados de uma Conta
+
+* URL: /api/accounts/:accountId
+* Método: GET
+* Descrição: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
+* Parâmetros na URL:
+  |Campo|Tipo|Obrigatório|Descrição|
+  |-----|----|-----------|---------|
+  |accountId|	string|	Sim|	Identificador da conta a ser buscada.|
+
+* Exemplo de Requisição:
+    ```bash
+    GET /api/v1/accounts/acc123
+    ```
+* Respostas:
+  * Sucesso (200 OK):
+    ```json
+    {
+      "success": true,
+      "account": {
+        "id": "acc123",
+        "foodBalance": 150,
+        "mealBalance": 50,
+        "cashBalance": 200
+      }
+    }
+    ```
+  * Falha (404 Not Found):
+    ```json
+    {
+      "success": false,
+      "message": "Account not found."
+    }
+    ```
+
 
 #### Collection do Postman AQUI.
 
+### Teste
+
+O projeto inclui uma suite de testes unitários para garantir a qualidade e a correta funcionalidade dos casos de uso e do repositório de contas. Os testes são implementados utilizando Vitest.
+
+#### Executando os Testes
+
+Instalar Dependências de Desenvolvimento
+
+Caso ainda não tenha instalado, execute:
+
+```bash
+npm install --save-dev vitest mock-knex
+```
+
+Executar os Testes
+
+```bash
+npm test
+```
+
+#### Cobertura dos Testes
+
+Os testes abrangem os seguintes cenários:
+
+* `authorizeTransactionUseCase`
+  * Orquestração correta do processo de autorização.
+  * Integração com o authorizeTransactionService.
+  * Respostas corretas para diferentes resultados de autorização.
+  * Tratamento de exceções e erros durante a autorização.
+* `createAccountUseCase`
+  * Criação bem-sucedida de uma nova conta.
+  * Falha na criação devido a erros de validação ou banco de dados.
+* `addBalanceUseCase`
+  * Adição de saldo bem-sucedida em diferentes tipos de balance.
+  * Tentativa de adicionar saldo com tipo de balance inválido.
+  * Tentativa de adicionar saldo com valor negativo ou zero.
+  * Falha na adição de saldo devido a erros no banco de dados
+* `getAccountUseCase`
+  * Recuperação bem-sucedida dos dados de uma conta existente.
+  * Tentativa de recuperar dados de uma conta inexistente.
+  * Falha na recuperação devido a erros no banco de dados.
+* `validateTransactionInput`
+  * Validação bem-sucedida de entradas válidas.
+  * Detecção de entradas inválidas ou incompletas.
+  * Tratamento de tipos de dados incorretos.
+  * Respostas adequadas para diferentes tipos de erros de validação.
+* `authorizeTransactionService`
+  * Autorização bem-sucedida de transações válidas.
+  * Rejeição de transações não autorizadas.
+  * Tratamento de erros internos durante o processo de autorização.
+  * Integração correta com serviços externos de autorização (se aplicável).
+
 ### Dependências Principais
+
 * Node.js: Ambiente de execução para JavaScript no servidor.
 * Express.js: Framework web para construção de APIs.
 * Knex.js: Query builder para facilitar interações com o banco de dados.
