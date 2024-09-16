@@ -1,12 +1,13 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import routes from './interfaces/http/routes.js';
+import accountRoutes from './interfaces/http/accountRoutes.js';
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/api', routes);
+app.use('/api/v1', routes);
+app.use('/api/v1/accounts', accountRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
