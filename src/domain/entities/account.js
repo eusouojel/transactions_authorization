@@ -1,5 +1,5 @@
-export const Account = (id, foodBalance, mealBalance, cashBalance) => ({
-  id,
+export const Account = (accountId, foodBalance, mealBalance, cashBalance) => ({
+  accountId,
   foodBalance,
   mealBalance,
   cashBalance

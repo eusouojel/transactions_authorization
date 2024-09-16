@@ -7,7 +7,7 @@ const db = knex(knexConfig.development);
 export const AccountRepositoryDatabase = () => {
   const findById = async (accountId) => {
     const accountRecord = await db('accounts')
-      .where({ id: accountId })
+      .where({ account_id: accountId })
       .first();
 
     if (!accountRecord) {
@@ -15,7 +15,7 @@ export const AccountRepositoryDatabase = () => {
     }
 
     return Account(
-      accountRecord.id,
+      accountRecord.account_id,
       accountRecord.food_balance,
       accountRecord.meal_balance,
       accountRecord.cash_balance
@@ -23,7 +23,7 @@ export const AccountRepositoryDatabase = () => {
   };
 
   const update = async (account) => {
-    await db('accounts').where({ id: account.id }).update({
+    await db('accounts').where({ account_id: account.accountId }).update({
       food_balance: account.foodBalance,
       meal_balance: account.mealBalance,
       cash_balance: account.cashBalance,
@@ -32,7 +32,7 @@ export const AccountRepositoryDatabase = () => {
 
   const create = async (account) => {
     await db('accounts').insert({
-      id: account.id,
+      account_id: account.accountId,
       food_balance: account.foodBalance,
       meal_balance: account.mealBalance,
       cash_balance: account.cashBalance,
@@ -41,7 +41,7 @@ export const AccountRepositoryDatabase = () => {
 
   const addBalance = async (accountId, balanceType, amount) => {
     await db('accounts')
-      .where({ id: accountId })
+      .where({ account_id: accountId })
       .increment(`${balanceType}`, amount);
   };
 

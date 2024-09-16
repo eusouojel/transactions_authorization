@@ -2,13 +2,14 @@ export const accountController = (createAccountUseCase, addBalanceUseCase, getAc
   return {
     createAccount: async (req, res) => {
       try {
-        const { foodBalance, mealBalance, cashBalance } = req.body;
+        const { accountId, foodBalance, mealBalance, cashBalance } = req.body;
 
-        // if (!id) {
-        //   return res.status(400).json({ message: 'Account ID is required.' });
-        // }
+        if (!accountId) {
+          return res.status(400).json({ message: 'Account ID is required.' });
+        }
 
         const result = await createAccountUseCase({
+          accountId,
           foodBalance,
           mealBalance,
           cashBalance,
