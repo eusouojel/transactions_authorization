@@ -89,6 +89,8 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
 
 A API do projeto expõe endpoints para autorizar transações financeiras, permitindo que clientes externos interajam com o sistema de forma segura e eficiente.
 
+[Para facilitar, baixe aqui a collection do Postsman com todos os endpoints disponíveis](https://github.com/eusouojel/transactions_authorization/blob/main/postman_collection.json).
+
 #### Autorizar Transação
 
 * URL: /api/v1/transactions/
@@ -289,9 +291,6 @@ curl -X POST http://localhost:3000/api/v1/transactions \
       "message": "Account not found."
     }
     ```
-
-
-#### Collection do Postman AQUI.
 
 ### Como Rodar o Aplicativo Localmente
 
