@@ -21,7 +21,7 @@ describe('createAccountUseCase', () => {
 
   it('should create a new account successfully', async () => {
     const input = {
-      id: '1',
+      accountId: '1',
       foodBalance: 100,
       mealBalance: 50,
       cashBalance: 200,
@@ -30,7 +30,7 @@ describe('createAccountUseCase', () => {
     await useCase(input);
 
     expect(accountRepositoryMock.create).toHaveBeenCalledWith({
-      id: '1',
+      accountId: '1',
       foodBalance: 100,
       mealBalance: 50,
       cashBalance: 200,
@@ -39,7 +39,7 @@ describe('createAccountUseCase', () => {
 
   it('should handle errors during account creation', async () => {
     const input = {
-      id: '1',
+      accountId: '1',
       foodBalance: 100,
       mealBalance: 50,
       cashBalance: 200,
