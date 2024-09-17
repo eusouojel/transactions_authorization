@@ -43,7 +43,7 @@ Implementar locks distribuídos para garantir que somente uma instância da apli
 
 Fluxo de Implementação Combinada:
 
-<img src="https://github.com/eusouojel/transactions_authorization/blob/main/L4-graph.jpg"/>
+<img src="https://github.com/eusouojel/transactions_authorization/blob/main/L4-graphv2.jpg"/>
 
 **Descrição do Fluxo**
 
