@@ -152,14 +152,14 @@ describe('authorizeTransactionService', () => {
     const result = authorizeTransactionService(account, totalAmount, mcc, merchant);
 
     expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, mcc);
-    expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, '5812');
+    expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, '9999');
     expect(result).toEqual({
       success: true,
       account: {
         id: '123',
         foodBalance: 100,
-        mealBalance: 30,
-        cashBalance: 200,
+        mealBalance: 50,
+        cashBalance: 180,
       },
       code: '00',
     });
@@ -195,7 +195,7 @@ describe('authorizeTransactionService', () => {
     const result = authorizeTransactionService(testAccount, totalAmount, mcc, merchant);
 
     expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, mcc);
-    expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, '5812');
+    expect(validateTransactionInput).toHaveBeenCalledWith(totalAmount, '9999');
     expect(result).toEqual({
       success: true,
       account: {
@@ -283,9 +283,9 @@ describe('authorizeTransactionService', () => {
       success: true,
       account: {
         id: '123',
-        foodBalance: 80,
+        foodBalance: 100,
         mealBalance: 50,
-        cashBalance: 200,
+        cashBalance: 180,
       },
       code: '00',
     });
