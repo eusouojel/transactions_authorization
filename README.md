@@ -39,11 +39,6 @@ A camada de Domínio encapsula a lógica de negócio central do sistema, definin
   * AccountRepository: Define a interface para operações relacionadas às contas, como encontrar uma conta por ID e atualizar os saldos da conta.
   * TransactionRepository: Define a interface para operações relacionadas às transações, especificamente a criação de novas transações no sistema.
 
-#### Interação com Outras Camadas:
-
-A camada de Domínio é utilizada pela camada de Aplicação para orquestrar os casos de uso. As interfaces de repositórios definidas aqui são implementadas na camada de Infraestrutura, permitindo que a lógica de negócio permaneça desacoplada das implementações de persistência de dados.
-
-
 
 ### Camada de Aplicação (/src/application)
 
@@ -59,9 +54,6 @@ A camada de Aplicação coordena a execução das ações específicas do sistem
   * addBalance: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
   * getAccount: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
 
-#### Interação com Outras Camadas:
-
-Os casos de uso da camada de Aplicação utilizam as entidades e serviços da camada de Domínio para executar a lógica de negócio e interagem com os repositórios da camada de Infraestrutura para persistir e recuperar dados necessários para a operação.
 
 ### Camada de Infraestrutura (/src/infrastructure)
 
@@ -75,9 +67,6 @@ A camada de Infraestrutura fornece implementações concretas para as interfaces
   * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados.
   * TransactionRepositoryDatabase: Implementa a interface TransactionRepository utilizando Knex.js para inserir novas transações no banco de dados.
 
-#### Interação com Outras Camadas:
-
-A camada de Infraestrutura implementa as interfaces de repositórios definidas na camada de Domínio, permitindo que a lógica de negócio interaja com os dados de forma desacoplada. Além disso, utiliza configurações definidas para conectar-se e operar sobre o banco de dados conforme as necessidades do sistema.
 
 ### Camada de Interface (/src/interfaces)
 
@@ -98,9 +87,6 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
       * addBalance: Responsável por adicionar saldo a um tipo específico de balance de uma conta existente
       * getAccount: Responsável por recuperar os dados de uma conta específica
 
-#### Interação com Outras Camadas:
-
-Os controladores da camada de API utilizam os casos de uso da camada de Aplicação para executar operações solicitadas pelos clientes. A API atua como a interface de entrada para o sistema, recebendo requisições externas, processando-as através das camadas internas e retornando respostas apropriadas.
 
 ### Detalhes da API
 
@@ -123,7 +109,7 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 * Exemplo de requisição JSON:
 ```json
 {
-  "accountId": "123",
+  "accountId": 123,
   "totalAmount": 50.0,
   "mcc": "5411",
   "merchant": "UBER TRIP                   SAO PAULO BR"
@@ -135,7 +121,7 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 curl -X POST http://localhost:3000/api/v1/transactions \
 -H "Content-Type: application/json" \
 -d '{
-  "accountId": "123",
+  "accountId": 123,
   "totalAmount": 50.0,
   "mcc": "5411",
   "merchant": "UBER TRIP                   SAO PAULO BR"
@@ -190,7 +176,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
 #### Criar Nova Conta
 
-* URL: /api/accounts/create
+* URL: /api/v1/accounts/create
 * Método: POST
 * Descrição: Cria uma nova conta com saldos iniciais.
 * Parâmetros no Corpo da Requisição (JSON):
@@ -205,7 +191,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 * Exemplo de Requisição:
 ```json
 {
-  "id": "acc123",
+  "accountId": 123,
   "foodBalance": 100,
   "mealBalance": 50,
   "cashBalance": 200
@@ -236,14 +222,14 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
   |Campo|Tipo|Obrigatório|Descrição|
   |-----|----|-----------|---------|
-  |accountId|	string|	Sim|	Identificador da conta|
+  |accountId|	number|	Sim|	Identificador da conta|
   |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (foodBalance, |mealBalance, cashBalance)|
   |amount|	number|	Sim|	Valor a ser adicionado|
 
 * Exemplo de Requisição:
   ```json
   {
-    "accountId": "acc123",
+    "accountId": 123,
     "balanceType": "foodBalance",
     "amount": 50
   }
@@ -265,17 +251,17 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
 #### Obter Dados de uma Conta
 
-* URL: /api/accounts/:accountId
+* URL: /api/v1/accounts/:accountId
 * Método: GET
 * Descrição: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
 * Parâmetros na URL:
   |Campo|Tipo|Obrigatório|Descrição|
   |-----|----|-----------|---------|
-  |accountId|	string|	Sim|	Identificador da conta a ser buscada|
+  |accountId|	number|	Sim|	Identificador da conta a ser buscada|
 
 * Exemplo de Requisição:
     ```bash
-    GET /api/v1/accounts/acc123
+    GET /api/v1/accounts/123
     ```
 * Respostas:
   * Sucesso (200 OK):
@@ -283,7 +269,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
     {
       "success": true,
       "account": {
-        "id": "acc123",
+        "accountId": 123,
         "foodBalance": 150,
         "mealBalance": 50,
         "cashBalance": 200
@@ -304,6 +290,103 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 ### Teste
 
 O projeto inclui uma suite de testes unitários para garantir a qualidade e a correta funcionalidade dos casos de uso e do repositório de contas. Os testes são implementados utilizando Vitest.
+
+
+#### Como Rodar o Aplicativo Localmente
+
+Pré-requisitos
+
+Antes de iniciar, certifique-se de ter os seguintes softwares instalados em sua máquina:
+
+* Node.js (versão 14 ou superior)
+* npm (gerenciador de pacotes do Node.js)
+* Git (para clonar o repositório)
+* SQLite (ou outro SGBD compatível, se aplicável)
+
+1. Clonar o Repositório
+
+Primeiramente, clone o repositório do projeto para o seu ambiente local utilizando o Git:
+
+```bash
+git clone https://github.com/eusouojel/transactions_authorization/
+```
+
+2. Navegar para o Diretório do Projeto
+
+Acesse o diretório do projeto clonado:
+
+``` bash
+cd transactions_authorization (ou outro nome, caso tenha alterado o caminho)
+```
+
+3. Instalar as Dependências
+
+Instale todas as dependências necessárias utilizando o npm:
+
+``` bash
+npm install
+```
+
+4. Configurar o Banco de Dados
+
+Instalar o Driver do SQLite
+
+```bash
+npm install sqlite3
+
+```
+
+Instalar o Knex globalmente
+
+```bash
+npm install -g knex
+```
+
+Rodar as Migrações
+
+Execute as migrações para criar as tabelas necessárias no banco de dados:
+
+```bash
+knex migrate:latest --knexfile=./knexfile.cjs   
+```
+
+Rodar as Seeds
+
+Após as migrações, execute as seeds para popular o banco de dados com dados iniciais:
+
+```bash
+knex seed:run --knexfile=./knexfile.cjs
+```
+
+Note que estamos setando o caminho do arquivo de configurações do Knex
+
+Iniciar o Servidor
+
+Com todas as dependências instaladas e o banco de dados configurado, você está pronto para iniciar o servidor Express.
+
+```bash
+npm start
+```
+
+Após a execução, você deve ver uma mensagem no terminal indicando que o servidor está rodando:
+
+```bash
+Server is running on port 3000
+```
+
+Acessar a API
+
+Abra uma ferramenta cliente de API, como o Postman ou Insomnia e faça uma requisição para verificar se a API está funcionando corretamente.
+
+Exemplo de Requisição:
+
+```http
+GET http://localhost:3000/api/v1/accounts/123
+```
+
+Resultado Esperado:
+
+Se a conta 123 existir, você deverá receber os dados correspondentes no formato JSON.
 
 #### Executando os Testes
 
