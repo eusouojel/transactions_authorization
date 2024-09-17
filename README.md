@@ -104,7 +104,18 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
   |accountId|number|Sim|Identificador único da conta|
   |totalAmount|number|Sim|Valor a ser debitado de um saldo específico|
   |mcc|string|Sim|Mcc referente a um saldo específico da conta|
-  |merchant|string|Sim|Nome do comerciante que está solicitando o débito|
+  |merchant|string|Sim|Nome do comerciante que está solicitando o débito.|
+
+  Atualmente os comerciantes disponíveis no app, e que possuem um MCC vinculado são:
+
+  |Merchant|MCC|
+  |---|---|
+  |'UBER TRIP                   SAO PAULO BR'|'5812'|
+  |'UBER EATS                   SAO PAULO BR'|'5411'|
+  |'PAG*JoseDaSilva          RIO DE JANEI BR'|'5811'|
+  |'PICPAY*BILHETEUNICO           GOIANIA BR'|'5812'|
+
+  Caso utilize nomes de comerciantes diferentes dos apresentados acima no campo `merchant` o app não saberá qual o MCC do comerciante, e não substituirá o MCC caso o mesmo esteja inválido no campo `mcc`.
 
 * Exemplo de requisição JSON:
 ```json
@@ -223,7 +234,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
   |Campo|Tipo|Obrigatório|Descrição|
   |-----|----|-----------|---------|
   |accountId|	number|	Sim|	Identificador da conta|
-  |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (foodBalance, |mealBalance, cashBalance)|
+  |balanceType|	string|	Sim|	Tipo de saldo a ser adicionado (`food_balance`, `meal_balance `, `cash_balance`)|
   |amount|	number|	Sim|	Valor a ser adicionado|
 
 * Exemplo de Requisição:
