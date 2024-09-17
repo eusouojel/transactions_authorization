@@ -46,7 +46,7 @@ A camada de Domínio encapsula a lógica de negócio central do sistema, definin
 
 A camada de Aplicação coordena a execução das ações específicas do sistema, integrando as entidades, serviços de domínio e repositórios para realizar funcionalidades concretas. Ela atua como a ponte entre a camada de Domínio e as interfaces externas (como a API).
 
-#### Componentes Principais:
+#### Componentes:
 
 * Casos de Uso (useCases):
   * authorizeTransactionUseCase: Orquestra o processo completo de autorização de uma transação financeira.
@@ -61,7 +61,7 @@ A camada de Aplicação coordena a execução das ações específicas do sistem
 
 A camada de Infraestrutura fornece implementações concretas para as interfaces de repositórios definidas na camada de Domínio, além de gerenciar integrações com sistemas externos, como bancos de dados. Ela é responsável pela persistência de dados e configurações necessárias para o funcionamento do sistema.
 
-#### Componentes Principais:
+#### Componentes:
 
 * Persistência (persistence/repositories):
   * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados.
@@ -74,18 +74,14 @@ A camada de Infraestrutura fornece implementações concretas para as interfaces
 
 A camada de Interfaces expõe as funcionalidades do sistema através de endpoints HTTP, permitindo que clientes externos (como aplicações frontend ou outros serviços) interajam com o autorizador de transações financeiras.
 
-#### Componentes Principais:
+#### Componentes:
 
 * Controladores (controllers):
-  * transactionController: Manipula as requisições HTTP relacionadas a transações. Este controlador recebe os dados da requisição, invoca o caso de uso authorizeTransactionUseCase com os parâmetros fornecidos e retorna a resposta adequada ao cliente com base no resultado da autorização.
+  * transactionController: gerencia as requisições HTTP relacionadas a transações. Este controlador recebe os dados da requisição, invoca o caso de uso `authorizeTransactionUseCase` com os parâmetros fornecidos e retorna a resposta adequada ao cliente com base no resultado da autorização.
+  * accountController: gerencia as requisições relacionadas às operações de contas. Ele interage com os casos de uso correspondentes para executar ações como criar uma nova conta, adicionar saldo a um tipo específico de balance e recuperar os dados de uma conta existente.
   * Rotas (routes):
-    * accountRoutes: ...
-    * transactionRoutes: Define os endpoints da API relacionados a transações. Mapeia rotas específicas para os controladores correspondentes.
-  * accountController: O Account Controller gerencia as requisições relacionadas às operações de contas, interagindo com os casos de uso correspondentes para executar as ações necessárias.
-    * Métodos Implementados:
-      * createAccount: Responsável por criar uma nova conta
-      * addBalance: Responsável por adicionar saldo a um tipo específico de balance de uma conta existente
-      * getAccount: Responsável por recuperar os dados de uma conta específica
+    * accountRoutes: define os endpoints da API relacionados a contas. Mapeia rotas específicas para os métodos correspondentes no `accountController`, facilitando a criação, atualização e recuperação de contas.
+    * transactionRoutes: Define os endpoints da API relacionados a transações. Este arquivo mapeia rotas específicas para os métodos do `transactionController`, permitindo a autorização e gerenciamento de transações financeiras.
 
 
 ### Detalhes da API
@@ -110,10 +106,10 @@ A API do projeto expõe endpoints para autorizar transações financeiras, permi
 
   |Merchant|MCC|
   |---|---|
-  |'UBER TRIP                   SAO PAULO BR'|'5812'|
-  |'UBER EATS                   SAO PAULO BR'|'5411'|
-  |'PAG*JoseDaSilva          RIO DE JANEI BR'|'5811'|
-  |'PICPAY*BILHETEUNICO           GOIANIA BR'|'5812'|
+  |UBER TRIP SAO PAULO BR|5812|
+  |UBER EATS SAO PAULO BR|5411|
+  |PAG*JoseDaSilva RIO DE JANEI BR|5811|
+  |PICPAY*BILHETEUNICO GOIANIA BR|5812|
 
   Caso utilize nomes de comerciantes diferentes dos apresentados acima no campo `merchant` o app não saberá qual o MCC do comerciante, e não substituirá o MCC caso o mesmo esteja inválido no campo `mcc`.
 
