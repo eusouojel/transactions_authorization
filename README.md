@@ -26,18 +26,19 @@ A camada de Domínio encapsula a lógica de negócio central do sistema, definin
 #### Componentes:
 
 * Entidades (entities):
-  * Account: Representa uma conta bancária com atributos como id, foodBalance, mealBalance e cashBalance. Esta entidade é fundamental para gerenciar os saldos disponíveis para diferentes tipos de transações.
-  * Transaction: Representa uma transação com atributos accountID, totalAmount, mcc e merchant. Ela é fundamental para registrar as transações solicitadas para a aplicação, transações essas que manipulam os saldos disponíveis nas contas.
+
+  * `Account`: Representa uma conta bancária com atributos como `accountId`, `foodBalance`, `mealBalance` e `cashBalance`. Esta entidade é fundamental para gerenciar os saldos disponíveis para diferentes tipos de transações.
+  * `Transaction`: Representa uma transação com atributos `accountID`, `totalAmount`, `mcc` e `merchant`. Ela é fundamental para registrar as transações solicitadas para a aplicação, transações essas que manipulam os saldos disponíveis nas contas.
     
 * Serviços (services):
 
-  * transactionAuthorizationService: Implementa a lógica de autorização das transações. Este serviço valida os inputs da transação, determina qual tipo de saldo (alimentação, refeição ou dinheiro) deve ser utilizado para a transação e atualiza o saldo da conta de acordo.
-  * validationService (validationService.js): Responsável por validar os inputs das transações, garantindo que o totalAmount seja um número positivo e que o mcc seja um código válido.
+  * `transactionAuthorizationService`: Implementa a lógica de autorização das transações. Este serviço valida os inputs da transação, determina qual tipo de saldo (alimentação, refeição ou dinheiro) deve ser utilizado para a transação e atualiza o saldo da conta de acordo.
+  * `validationService`: Responsável por validar os inputs das transações, garantindo que o totalAmount seja um número positivo e que o mcc seja um código válido.
 
 * Repositórios (repositories):
 
-  * AccountRepository: Define a interface para operações relacionadas às contas, como encontrar uma conta por ID e atualizar os saldos da conta.
-  * TransactionRepository: Define a interface para operações relacionadas às transações, especificamente a criação de novas transações no sistema.
+  * `AccountRepository`: Define a interface para operações relacionadas às contas, como encontrar uma conta por ID e atualizar os saldos da conta.
+  * `TransactionRepository`: Define a interface para operações relacionadas às transações, especificamente a criação de novas transações no sistema.
 
 
 ### Camada de Aplicação (/src/application)
@@ -49,10 +50,10 @@ A camada de Aplicação coordena a execução das ações específicas do sistem
 #### Componentes:
 
 * Casos de Uso (useCases):
-  * authorizeTransactionUseCase: Orquestra o processo completo de autorização de uma transação financeira.
-  * createAccount: Cria uma nova conta de usuário com saldos iniciais para foodBalance, mealBalance e cashBalance.
-  * addBalance: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
-  * getAccount: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
+  * `authorizeTransactionUseCase`: Orquestra o processo completo de autorização de uma transação financeira.
+  * `createAccount`: Cria uma nova conta de usuário com saldos iniciais para foodBalance, mealBalance e cashBalance.
+  * `addBalance`: Adiciona um valor a um tipo específico de saldo (foodBalance, mealBalance ou cashBalance) de uma conta existente.
+  * `getAccount`: Recupera os dados completos de uma conta específica, incluindo os saldos atuais.
 
 
 ### Camada de Infraestrutura (/src/infrastructure)
@@ -64,8 +65,8 @@ A camada de Infraestrutura fornece implementações concretas para as interfaces
 #### Componentes:
 
 * Persistência (persistence/repositories):
-  * AccountRepositoryDatabase: Implementa a interface AccountRepository utilizando Knex.js para interagir com o banco de dados.
-  * TransactionRepositoryDatabase: Implementa a interface TransactionRepository utilizando Knex.js para inserir novas transações no banco de dados.
+  * `AccountRepositoryDatabase`: Implementa a interface `AccountRepository` utilizando Knex.js para interagir com o banco de dados.
+  * `TransactionRepositoryDatabase`: Implementa a interface `TransactionRepository` utilizando Knex.js para inserir novas transações no banco de dados.
 
 
 ### Camada de Interface (/src/interfaces)
@@ -77,11 +78,11 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
 #### Componentes:
 
 * Controladores (controllers):
-  * transactionController: gerencia as requisições HTTP relacionadas a transações. Este controlador recebe os dados da requisição, invoca o caso de uso `authorizeTransactionUseCase` com os parâmetros fornecidos e retorna a resposta adequada ao cliente com base no resultado da autorização.
-  * accountController: gerencia as requisições relacionadas às operações de contas. Ele interage com os casos de uso correspondentes para executar ações como criar uma nova conta, adicionar saldo a um tipo específico de balance e recuperar os dados de uma conta existente.
+  * `transactionController`: gerencia as requisições HTTP relacionadas a transações. Este controlador recebe os dados da requisição, invoca o caso de uso `authorizeTransactionUseCase` com os parâmetros fornecidos e retorna a resposta adequada ao cliente com base no resultado da autorização.
+  * `accountController`: gerencia as requisições relacionadas às operações de contas. Ele interage com os casos de uso correspondentes para executar ações como criar uma nova conta, adicionar saldo a um tipo específico de balance e recuperar os dados de uma conta existente.
   * Rotas (routes):
-    * accountRoutes: define os endpoints da API relacionados a contas. Mapeia rotas específicas para os métodos correspondentes no `accountController`, facilitando a criação, atualização e recuperação de contas.
-    * transactionRoutes: Define os endpoints da API relacionados a transações. Este arquivo mapeia rotas específicas para os métodos do `transactionController`, permitindo a autorização e gerenciamento de transações financeiras.
+    * `accountRoutes`: define os endpoints da API relacionados a contas. Mapeia rotas específicas para os métodos correspondentes no `accountController`, facilitando a criação, atualização e recuperação de contas.
+    * `transactionRoutes`: Define os endpoints da API relacionados a transações. Este arquivo mapeia rotas específicas para os métodos do `transactionController`, permitindo a autorização e gerenciamento de transações financeiras.
 
 
 ### Detalhes da API
@@ -215,8 +216,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
   * Falha (400 Bad Request):
     ```json
     {
-      "success": false,
-      "message": "Detalhes do erro."
+      "success": false
     }
     ```
 
@@ -251,8 +251,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
   * Falha (400 Bad Request):
     ```json
     {
-      "success": false,
-      "message": "Detalhes do erro."
+      "success": false
     }
     ```
 
