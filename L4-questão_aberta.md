@@ -43,17 +43,31 @@ Implementar locks distribuídos para garantir que somente uma instância da apli
 
 Fluxo de Implementação Combinada:
 
-Recebimento da Transação:
-A API recebe a solicitação de transação.
-Aquisição do Lock Distribuído:
-A instância da API tenta adquirir um lock para o accountId correspondente.
-Processamento da Transação com Optimistic Locking:
-Uma vez que o lock é adquirido, a transação é processada utilizando Optimistic Locking.
-A aplicação lê o saldo e a versão atual da conta.
-Calcula o novo saldo e tenta atualizar o registro verificando a versão.
-Se a versão coincidir, a atualização é confirmada e a versão é incrementada.
-Caso contrário, a transação é rejeitada ou reexecutada.
-Liberação do Lock:
-Após a conclusão do processamento (seja com sucesso ou falha), o lock distribuído é liberado.
-Resposta ao Cliente:
-A API responde ao cliente com o resultado da transação.
+<img src="https://github.com/eusouojel/transactions_authorization/blob/main/L4-graph.jpg"/>
+
+**Descrição do Fluxo**
+
+1. Recebimento da Transação:
+  * A API recebe a solicitação de transação do cliente.
+2. Aquisição do Lock Distribuído:
+  * A instância da API tenta adquirir um lock distribuído para o accountId correspondente, garantindo que nenhuma outra transação para a mesma conta seja processada simultaneamente.
+3. Verificação do Lock:
+  * Se o lock for adquirido com sucesso:
+    * A transação prossegue para o processamento utilizando Optimistic Locking.
+  * Se o lock não for adquirido:
+    * A transação é rejeitada imediatamente para evitar espera e potencial timeout.
+4. Processamento da Transação com Optimistic Locking:
+  * Leitura do Saldo e Versão Atual:
+    * A aplicação lê o saldo atual e a versão da conta no banco de dados.
+  * Cálculo e Tentativa de Atualização:
+    * Calcula o novo saldo com base na transação solicitada.
+    * Tenta atualizar o saldo no banco de dados verificando se a versão ainda é a mesma lida inicialmente.
+  * Verificação da Versão:
+    * Se a versão coincidir:
+      * A atualização é confirmada e a versão da conta é incrementada para refletir a alteração.
+    * Se a versão não coincidir:
+      * Indica que outra transação modificou a conta simultaneamente, e a transação atual é rejeitada ou reexecutada para evitar inconsistências.
+5. Liberação do Lock:
+  * Após a conclusão do processamento (seja com sucesso ou falha), o lock distribuído é liberado, permitindo que outras transações possam ser processadas para a mesma conta.
+6. Resposta ao Cliente:
+  * A API responde ao cliente com o resultado da transação, informando sucesso ou falha conforme o processamento realizado.
