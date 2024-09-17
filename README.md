@@ -1,6 +1,6 @@
 # L4 - Questão aberta
 
-A resposta para a questão aberta está [AQUI](L4-questão_aberta.md) - (na raiz do projeto, arquivo `L4-questão_aberta.md`).
+A resposta para a questão aberta está [AQUI](L4-questão_aberta.md) - (ou na raiz do projeto, arquivo `L4-questão_aberta.md`).
 
 # Visão Geral do Projeto
 
@@ -89,7 +89,7 @@ A camada de Interfaces expõe as funcionalidades do sistema através de endpoint
 
 A API do projeto expõe endpoints para autorizar transações financeiras, permitindo que clientes externos interajam com o sistema de forma segura e eficiente.
 
-[CLIQUE AQUI para baixar a collection do Postsman com todos os endpoints disponíveis](https://github.com/eusouojel/transactions_authorization/blob/main/postman_collection.json).
+[CLIQUE AQUI para baixar a collection do Postsman com todos os endpoints disponíveis](https://github.com/eusouojel/transactions_authorization/blob/main/postman_collection.json) - (ou na raiz do projeto, arquivo `postman_collection.json`).
 
 #### Autorizar Transação
 
