@@ -287,12 +287,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
 #### Collection do Postman AQUI.
 
-### Teste
-
-O projeto inclui uma suite de testes unitários para garantir a qualidade e a correta funcionalidade dos casos de uso e do repositório de contas. Os testes são implementados utilizando Vitest.
-
-
-#### Como Rodar o Aplicativo Localmente
+### Como Rodar o Aplicativo Localmente
 
 Pré-requisitos
 
@@ -387,6 +382,10 @@ GET http://localhost:3000/api/v1/accounts/123
 Resultado Esperado:
 
 Se a conta 123 existir, você deverá receber os dados correspondentes no formato JSON.
+
+### Teste
+
+O projeto inclui uma suite de testes unitários para garantir a qualidade e a correta funcionalidade dos casos de uso e do repositório de contas. Os testes são implementados utilizando Vitest.
 
 #### Executando os Testes
 
