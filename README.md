@@ -289,7 +289,7 @@ curl -X POST http://localhost:3000/api/v1/transactions \
 
 ### Como Rodar o Aplicativo Localmente
 
-Pré-requisitos
+#### Pré-requisitos
 
 Antes de iniciar, certifique-se de ter os seguintes softwares instalados em sua máquina:
 
@@ -298,7 +298,7 @@ Antes de iniciar, certifique-se de ter os seguintes softwares instalados em sua 
 * Git (para clonar o repositório)
 * SQLite (ou outro SGBD compatível, se aplicável)
 
-1. Clonar o Repositório
+#### Clonar o Repositório
 
 Primeiramente, clone o repositório do projeto para o seu ambiente local utilizando o Git:
 
@@ -306,7 +306,7 @@ Primeiramente, clone o repositório do projeto para o seu ambiente local utiliza
 git clone https://github.com/eusouojel/transactions_authorization/
 ```
 
-2. Navegar para o Diretório do Projeto
+#### Navegar para o Diretório do Projeto
 
 Acesse o diretório do projeto clonado:
 
@@ -314,7 +314,7 @@ Acesse o diretório do projeto clonado:
 cd transactions_authorization (ou outro nome, caso tenha alterado o caminho)
 ```
 
-3. Instalar as Dependências
+#### Instalar as Dependências
 
 Instale todas as dependências necessárias utilizando o npm:
 
@@ -322,7 +322,7 @@ Instale todas as dependências necessárias utilizando o npm:
 npm install
 ```
 
-4. Configurar o Banco de Dados
+#### Configurar o Banco de Dados
 
 Instalar o Driver do SQLite
 
@@ -355,7 +355,7 @@ knex seed:run --knexfile=./knexfile.cjs
 
 Note que estamos setando o caminho do arquivo de configurações do Knex
 
-Iniciar o Servidor
+#### Iniciar o Servidor
 
 Com todas as dependências instaladas e o banco de dados configurado, você está pronto para iniciar o servidor Express.
 
@@ -369,7 +369,7 @@ Após a execução, você deve ver uma mensagem no terminal indicando que o serv
 Server is running on port 3000
 ```
 
-Acessar a API
+#### Acessar a API
 
 Abra uma ferramenta cliente de API, como o Postman ou Insomnia e faça uma requisição para verificar se a API está funcionando corretamente.
 
